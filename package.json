@@ -1,0 +1,22 @@
+{
+  "name": "bookstore",
+  "version": "1.0.0",
+  "description": "This is a ebook api projec",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "express"
+  ],
+  "author": "Anand K <anandkr7808@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
