@@ -1,11 +1,12 @@
 import express from "express";
+import globalErrorHandler from "./middleware/globalErrorHandler";
+import userRouter from "./users/userRouter";
 
 
 const app = express();
-app.get("/", (req, res) => {
-    
-    res.json({
-        message: "initial testing server", 
-    });
-});
+
+
+app.use(express.json())
+app.use("/api/users",userRouter)
+app.use(globalErrorHandler)
 export default app;
