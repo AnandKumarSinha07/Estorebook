@@ -1,8 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 
 
-
-
 cloudinary.config({ 
     cloud_name: 'dpheetc0h', 
     api_key: '917649638998442', 

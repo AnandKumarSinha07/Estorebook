@@ -1,13 +1,16 @@
 import { NextFunction ,Request,Response} from "express";
 import path from "node:path";
 import cloudinary from "../config/cloudinary";
+import createHttpError from "http-errors";
 import book from "./bookModel";
+import fs from "node:fs"
+
 
 
 const createBook=async(req:Request,res:Response,next:NextFunction)=>{
    try {
         
-    console.log("req",req.files)
+     const {title,genre}=req.body;
 
      const files=req.files as {[filename:string]:Express.Multer.File[]}   
  
@@ -22,24 +25,36 @@ const createBook=async(req:Request,res:Response,next:NextFunction)=>{
      })
 
      const bookfileName=files.file[0].filename;
-     const bookFilePath=path.resolve(__dirname,'../../public/data/uploads',filename)
+     const bookFilePath=path.resolve(__dirname,'../../public/data/uploads',bookfileName)
+
 
      const bookFileUpload=await cloudinary.uploader.upload(bookFilePath,{
-         resource_type:'raw',
+         resource_type:"raw",
          filename_override:bookfileName,
          folder:'book-pdfs',
          format:"pdf"
      })
 
-     console.log("fileUpload",bookFileUpload)
 
+     
+     const newBook=await book.create({
+        title,
+        genre,
+        author:"6788ba8710724fafc26884ac",
+        coverImg:uploadResult.secure_url,
+        file:bookFileUpload.secure_url
 
-     console.log("upload result",uploadResult)
-     res.json({
-       message:"ok"
      })
-   } catch (error) {
     
+     
+
+     res.status(201).json({
+        id:newBook._id
+     })
+
+   } catch (error) {
+       console.log("error inside the createbook api",error);
+       next(createHttpError(404,"Bad gateway"))
    }
 }
 
