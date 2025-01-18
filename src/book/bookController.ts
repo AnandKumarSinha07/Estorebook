@@ -92,4 +92,53 @@ const oneBook=async(req:Request,res:Response,next:NextFunction)=>{
     }
 }
 
-export {createBook,getBooks,oneBook}
+const deleteBook=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const id=req.params.id;
+        const findBookId=await book.findOne({_id:id});
+
+        if(!findBookId){
+            return next(createHttpError(400,"Book Not found"));
+        }
+
+        const _req=req as AuthRequest
+
+        if(_req.userID.toString()!=findBookId.author.toString()){
+           return next(createHttpError(404,"Not authorized to delete book"))
+        }
+
+        //https://res.cloudinary.com/dpheetc0h/image/upload/v1737054075/book-cover/celttkvp4jlmgvzpwmbv.jpg
+        //book-cover/celttkvp4jlmgvzpwmbv
+        
+        const coverimageSplit=findBookId.coverImg.split('/');
+        const coverimage=coverimageSplit.at(-2)+'/'+(coverimageSplit.at(-1)?.split('.').at(-2));
+
+       
+        //https://res.cloudinary.com/dpheetc0h/raw/upload/v1737054076/book-pdfs/dac6jdst30y9ywsqphbx.pdf
+        //book-pdfs/dac6jdst30y9ywsqphbx.pdf
+
+         const FileSplit=findBookId.file.split('/');
+         const coverfile=FileSplit.at(-2)+'/'+FileSplit.at(-1);
+
+           
+         await cloudinary.uploader.destroy(coverimage)
+         await cloudinary.uploader.destroy(coverfile,{
+            resource_type:"raw"
+         })
+
+
+        const deleteBook=await book.findByIdAndDelete({_id:id},{new:true})
+
+        res.status(204).json({
+            message:"Book deleted succesfully",
+        })
+        
+
+        
+    } catch (error) {
+         console.log("Error inside the delete api",error)
+         next(createHttpError(500,"Error in the delete api"))
+    }
+}
+
+export {createBook,getBooks,oneBook,deleteBook}
