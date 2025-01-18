@@ -59,4 +59,37 @@ const createBook=async(req:Request,res:Response,next:NextFunction)=>{
    }
 }
 
-export {createBook}
+const getBooks=async(req:Request,res:Response,next:NextFunction)=>{
+   try {
+      const findBook=await book.find();
+
+      res.json({
+        message:"Books",
+        findBook
+      }) 
+   } catch (error) {
+       console.log("Error inside the api of getting book",error)
+       next(createHttpError(500,"Error while getting book "))
+   }
+}
+
+const oneBook=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const Bookid=req.params.id;
+        const findBookId=await book.findOne({_id:Bookid});
+
+        if(!findBookId){
+            next(createHttpError(404,"Book Not found"))
+        }
+
+        res.json({
+            message:"Your Book",
+            findBookId
+        })
+    } catch (error) {
+        console.log("Error inside the single book api",error);
+        next(createHttpError(500,"Error in the book api"))
+    }
+}
+
+export {createBook,getBooks,oneBook}

@@ -1,5 +1,5 @@
 import express from "express"
-import { createBook } from "./bookController";
+import { createBook, getBooks, oneBook } from "./bookController";
 import multer from "multer";
 import path from "path";
 import authentication from "../middleware/auth";
@@ -16,5 +16,8 @@ bookRouter.post("/",authentication,upload.fields([
     {name:'coverImg',maxCount:1},
     {name:'file',maxCount:1}
 ]),createBook)
+
+bookRouter.get("/",getBooks)
+bookRouter.get('/:id',oneBook)
 
 export default bookRouter;
